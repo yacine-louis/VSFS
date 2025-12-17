@@ -3,19 +3,27 @@
 
 #include <record.h>
 
+#define RECORDS_PER_BLOCK 3
+#define INODE_COUNT 10 /* files count */
+
+#define BLOCK_HEADER_SIZE (2 * sizeof(int)) /* next_block + record_count */
+#define INODES_PER_BLOCK ((sizeof(Block) - BLOCK_HEADER_SIZE) / sizeof(Inode))
+#define INODES_BLOCK_COUNT ((INODE_COUNT + INODES_PER_BLOCK - 1) / INODES_PER_BLOCK)
+#define FIRST_DATA_BLOCK INODES_BLOCK_COUNT + 1;
+
 #define FILENAME_MAX_LEN 32
 
 typedef struct
 {
-  Record* records;
+  Record records[RECORDS_PER_BLOCK];
   int record_count;
-  int next;
+  int next_block;
 } Block;
 
 typedef struct
 {
-  char filename[FILENAME_MAX_LEN];
-  int first_block;
+  char filename[FILENAME_MAX_LEN - 1];
+  int first_block_index;
   int block_count;
   int record_count;
   int g_mode; // global organization (0 = contiguous, 1 = chained)
@@ -26,6 +34,6 @@ typedef struct
 {
   int block_index;
   int record_index;
-} Position;
+} RecordPosition;
 
 #endif
