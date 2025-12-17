@@ -8,8 +8,8 @@
 
 #define BLOCK_HEADER_SIZE (2 * sizeof(int)) /* next_block + record_count */
 #define INODES_PER_BLOCK ((sizeof(Block) - BLOCK_HEADER_SIZE) / sizeof(Inode))
-#define INODES_BLOCK_COUNT ((INODE_COUNT + INODES_PER_BLOCK - 1) / INODES_PER_BLOCK)
-#define FIRST_DATA_BLOCK INODES_BLOCK_COUNT + 1;
+#define INODE_BLOCK_COUNT ((INODE_COUNT + INODES_PER_BLOCK - 1) / INODES_PER_BLOCK)
+#define FIRST_DATA_BLOCK (INODE_BLOCK_COUNT + 1)
 
 #define FILENAME_MAX_LEN 32
 
@@ -35,5 +35,11 @@ typedef struct
   int block_index;
   int record_index;
 } RecordPosition;
+
+void fs_init(FILE *fs, int block_count);
+FILE *create_fs(int block_count);
+void printFileSystem(FILE *fs, int block_count);
+void initInode(Inode *inode);
+void read_alloc_table(FILE *MS, int alloc_table_buffer[], int block_count);
 
 #endif
